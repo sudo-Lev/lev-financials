@@ -79,6 +79,7 @@ These roadmap constraints are provisional until the step 7 review; do not invent
 
 ## React and UI rules
 
+- Treat the approved palette as a product constraint: Lavender Haze `#92A9E1`, Soft Graphite `#2E2E2E`, and the warm cream canvas `#EEE3CA`. Express variants through semantic tokens in `src/index.css`; do not bypass them in components.
 - Compose feature and page UI through the public `@/shared/ui` API. Direct primitive imports are reserved for shared UI internals.
 - HextaUI-derived components are source-owned: adapt them to this project's tokens and accessibility requirements rather than treating them as an opaque dependency.
 - Use semantic design tokens. Do not introduce hardcoded colors when an existing or new named token describes the intent.
