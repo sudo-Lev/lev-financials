@@ -17,9 +17,9 @@ Non-negotiable constraints:
 
 ## Current checkpoint
 
-Steps 1–7 are complete: the application foundation plus generic Currency and Money value objects with safe integer arithmetic.
+Steps 1–8 are complete: the application foundation plus core financial value objects, accounts, statements, merchants, transactions, provenance, and validation states.
 
-Do not implement roadmap step 8 or later domain behavior until statements and transactions have been reviewed with the repository owner. Documentation, fixes to completed work, and review preparation are allowed.
+Do not implement roadmap step 9 or later domain behavior until categories and recurring payments have been reviewed with the repository owner. Documentation, fixes to completed work, and review preparation are allowed.
 
 ## Architecture boundaries
 
