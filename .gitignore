@@ -5,6 +5,7 @@ coverage/
 
 # Local tooling
 .DS_Store
+.idea/
 *.local
 .env
 .env.*
