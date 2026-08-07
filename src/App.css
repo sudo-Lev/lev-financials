@@ -11,8 +11,12 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgb(32 34 31 / 8%) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(32 34 31 / 8%) 1px, transparent 1px);
+    linear-gradient(color-mix(in oklab, var(--foreground) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--foreground) 8%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 3.5rem 3.5rem;
   mask-image: linear-gradient(to bottom, black, transparent 82%);
 }
@@ -21,9 +25,21 @@
   position: relative;
   width: min(100%, 52rem);
   padding: clamp(2rem, 6vw, 5.5rem);
-  border: 1px solid rgb(32 34 31 / 28%);
-  background: rgb(248 247 240 / 92%);
-  box-shadow: 1.5rem 1.5rem 0 #d4e0c2;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 94%, transparent);
+  box-shadow: 1.5rem 1.5rem 0 var(--secondary);
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.foundation-screen__utility {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 3.5rem;
 }
 
 .foundation-screen__eyebrow,
@@ -36,12 +52,37 @@
 }
 
 .foundation-screen__eyebrow {
-  margin: 0 0 3.5rem;
+  margin: 0;
+}
+
+.foundation-screen__theme-toggle {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  background: var(--background);
+  font-family: var(--app-font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.foundation-screen__theme-toggle:hover {
+  border-color: var(--ring);
+  color: var(--foreground);
+}
+
+.foundation-screen__theme-toggle:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
 }
 
 .foundation-screen h1 {
   max-width: 10ch;
   margin: 0;
+  font-family: var(--app-font-display);
   font-size: clamp(3rem, 9vw, 6.5rem);
   font-weight: 400;
   letter-spacing: -0.065em;
@@ -66,8 +107,8 @@
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 50%;
-  background: #53753b;
-  box-shadow: 0 0 0 0.3rem rgb(83 117 59 / 14%);
+  background: var(--income);
+  box-shadow: 0 0 0 0.3rem color-mix(in oklab, var(--income) 14%, transparent);
 }
 
 @media (max-width: 640px) {
@@ -78,10 +119,12 @@
 
   .foundation-screen__content {
     margin-top: 8vh;
-    box-shadow: 0.75rem 0.75rem 0 #d4e0c2;
+    box-shadow: 0.75rem 0.75rem 0 var(--secondary);
   }
 
-  .foundation-screen__eyebrow {
+  .foundation-screen__utility {
+    align-items: flex-start;
+    flex-direction: column;
     margin-bottom: 2.5rem;
   }
 }
