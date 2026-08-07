@@ -1,51 +1,9 @@
-import './App.css'
+import { RouterProvider } from 'react-router'
 
-import { type Theme, useTheme } from '@/app/providers/theme-provider'
-import { Button } from '@/shared/ui'
-
-const nextTheme: Record<Theme, Theme> = {
-  system: 'light',
-  light: 'dark',
-  dark: 'system',
-}
-
-const themeLabel: Record<Theme, string> = {
-  system: 'Системна',
-  light: 'Світла',
-  dark: 'Темна',
-}
+import { appRouter } from '@/app/router/router'
 
 function App() {
-  const { setTheme, theme } = useTheme()
-
-  return (
-    <main className="foundation-screen">
-      <div className="foundation-screen__grid" aria-hidden="true" />
-      <section className="foundation-screen__content">
-        <div className="foundation-screen__utility">
-          <p className="foundation-screen__eyebrow">Lev Financials / 00</p>
-          <Button
-            className="foundation-screen__theme-toggle"
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={() => setTheme(nextTheme[theme])}
-          >
-            Тема: {themeLabel[theme]}
-          </Button>
-        </div>
-        <h1>Фінанси без зайвого шуму.</h1>
-        <p className="foundation-screen__description">
-          Локальний простір для виписок, категорій і зрозумілої картини витрат. Основа застосунку
-          готова.
-        </p>
-        <div className="foundation-screen__status">
-          <span aria-hidden="true" />
-          React + TypeScript + Vite
-        </div>
-      </section>
-    </main>
-  )
+  return <RouterProvider router={appRouter} />
 }
 
 export default App
