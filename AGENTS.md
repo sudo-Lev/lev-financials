@@ -17,9 +17,9 @@ Non-negotiable constraints:
 
 ## Current checkpoint
 
-Foundation steps 1–6 are complete: project scaffold, quality tooling, design system, HextaUI primitives, and responsive application shell.
+Steps 1–7 are complete: the application foundation plus generic Currency and Money value objects with safe integer arithmetic.
 
-Do not implement roadmap step 7 or later domain behavior until the domain model has been reviewed with the repository owner. Documentation, fixes to completed foundation work, and review preparation are allowed.
+Do not implement roadmap step 8 or later domain behavior until statements and transactions have been reviewed with the repository owner. Documentation, fixes to completed work, and review preparation are allowed.
 
 ## Architecture boundaries
 
@@ -45,7 +45,7 @@ infrastructure ──implements──> application/domain ports
 
 ## Domain rules
 
-These roadmap constraints are provisional until the step 7 review; do not invent the final API without that review.
+These constraints define the approved direction. Extend the API deliberately as later domain steps are reviewed.
 
 - Represent money as integer minor units with an explicit ISO 4217 currency.
 - Never use floating-point arithmetic for stored or calculated monetary values.
