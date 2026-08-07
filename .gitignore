@@ -1,0 +1,28 @@
+# Dependencies and builds
+node_modules/
+dist/
+coverage/
+
+# Local tooling
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+
+# Temporary files
+tmp/
+.tmp/
+
+# Private financial imports
+data/
+imports/
+statements/
+private-data/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
