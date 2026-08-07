@@ -1,6 +1,7 @@
 import './App.css'
 
 import { type Theme, useTheme } from '@/app/providers/theme-provider'
+import { Button } from '@/shared/ui'
 
 const nextTheme: Record<Theme, Theme> = {
   system: 'light',
@@ -23,13 +24,15 @@ function App() {
       <section className="foundation-screen__content">
         <div className="foundation-screen__utility">
           <p className="foundation-screen__eyebrow">Lev Financials / 00</p>
-          <button
+          <Button
             className="foundation-screen__theme-toggle"
             type="button"
+            size="sm"
+            variant="outline"
             onClick={() => setTheme(nextTheme[theme])}
           >
             Тема: {themeLabel[theme]}
-          </button>
+          </Button>
         </div>
         <h1>Фінанси без зайвого шуму.</h1>
         <p className="foundation-screen__description">

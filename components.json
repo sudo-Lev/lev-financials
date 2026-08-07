@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-vega",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "tabler",
+  "aliases": {
+    "components": "@/shared",
+    "utils": "@/shared/lib/utils",
+    "ui": "@/shared/ui/primitives",
+    "lib": "@/shared/lib",
+    "hooks": "@/shared/hooks"
+  },
+  "registries": {
+    "@hextaui": "https://hextaui.com/r/{name}.json"
+  }
+}

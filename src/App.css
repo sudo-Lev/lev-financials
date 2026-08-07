@@ -56,27 +56,10 @@
 }
 
 .foundation-screen__theme-toggle {
-  padding: 0.45rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--muted-foreground);
-  background: var(--background);
   font-family: var(--app-font-mono);
   font-size: 0.7rem;
-  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  cursor: pointer;
-}
-
-.foundation-screen__theme-toggle:hover {
-  border-color: var(--ring);
-  color: var(--foreground);
-}
-
-.foundation-screen__theme-toggle:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 3px;
 }
 
 .foundation-screen h1 {
