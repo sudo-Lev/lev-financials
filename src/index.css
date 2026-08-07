@@ -1,3 +1,4 @@
+@import "@fontsource-variable/inter";
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -52,8 +53,8 @@
 }
 
 :root {
-  --app-font-display: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
-  --app-font-sans: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+  --app-font-display: "Inter Variable", "Inter", sans-serif;
+  --app-font-sans: "Inter Variable", "Inter", sans-serif;
   --app-font-mono: "Berkeley Mono", "SFMono-Regular", Consolas, monospace;
 
   --background: #eee3ca;
@@ -157,18 +158,6 @@ body {
   transition:
     background-color 180ms ease,
     color 180ms ease;
-}
-
-.app-surface {
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(
-      90deg,
-      color-mix(in oklab, var(--foreground) 4%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 3.5rem 3.5rem;
-  mask-image: linear-gradient(to bottom, black 78%, transparent);
 }
 
 button,
