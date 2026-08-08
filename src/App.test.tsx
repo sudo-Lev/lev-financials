@@ -22,7 +22,10 @@ describe('App', () => {
     renderRoute()
 
     expect(await screen.findByRole('heading', { name: 'Огляд фінансів' })).toBeInTheDocument()
-    expect(screen.getByText('Дані залишаються у браузері')).toBeInTheDocument()
+    expect(screen.getByText('Фінанси')).toBeInTheDocument()
+    expect(screen.getByText('Інструменти')).toBeInTheDocument()
+    expect(screen.getByText('Система')).toBeInTheDocument()
+    expect(screen.queryByText('Дані залишаються у браузері')).not.toBeInTheDocument()
   })
 
   it('navigates through the application shell', async () => {

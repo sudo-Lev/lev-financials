@@ -6,7 +6,9 @@ export const uk = {
     privacy: 'Дані залишаються у браузері',
   },
   navigation: {
-    main: 'Головне',
+    finance: 'Фінанси',
+    tools: 'Інструменти',
+    system: 'Система',
     overview: 'Огляд',
     transactions: 'Транзакції',
     categories: 'Категорії',

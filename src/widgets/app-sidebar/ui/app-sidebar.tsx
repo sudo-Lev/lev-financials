@@ -6,13 +6,13 @@ import {
   IconRefresh,
   IconSettings,
 } from '@tabler/icons-react'
+import { Fragment } from 'react'
 import { NavLink, useLocation } from 'react-router'
 
 import { paths } from '@/app/router/paths'
 import { ThemeSwitcher } from '@/features/theme-switcher/ui/theme-switcher'
 import { messages } from '@/shared/i18n'
 import {
-  Badge,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -28,13 +28,26 @@ import {
   useSidebar,
 } from '@/shared/ui'
 
-const navigationItems = [
-  { label: messages.navigation.overview, path: paths.overview, Icon: IconLayoutDashboard },
-  { label: messages.navigation.transactions, path: paths.transactions, Icon: IconListDetails },
-  { label: messages.navigation.categories, path: paths.categories, Icon: IconCategory },
-  { label: messages.navigation.recurring, path: paths.recurring, Icon: IconRefresh },
-  { label: messages.navigation.import, path: paths.import, Icon: IconFileUpload },
-  { label: messages.navigation.settings, path: paths.settings, Icon: IconSettings },
+const navigationSections = [
+  {
+    label: messages.navigation.finance,
+    items: [
+      { label: messages.navigation.overview, path: paths.overview, Icon: IconLayoutDashboard },
+      { label: messages.navigation.transactions, path: paths.transactions, Icon: IconListDetails },
+      { label: messages.navigation.categories, path: paths.categories, Icon: IconCategory },
+    ],
+  },
+  {
+    label: messages.navigation.tools,
+    items: [
+      { label: messages.navigation.recurring, path: paths.recurring, Icon: IconRefresh },
+      { label: messages.navigation.import, path: paths.import, Icon: IconFileUpload },
+    ],
+  },
+  {
+    label: messages.navigation.system,
+    items: [{ label: messages.navigation.settings, path: paths.settings, Icon: IconSettings }],
+  },
 ] as const
 
 export function AppSidebar() {
@@ -66,38 +79,37 @@ export function AppSidebar() {
       <SidebarSeparator />
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{messages.navigation.main}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navigationItems.map(({ Icon, label, path }) => (
-                <SidebarMenuItem key={path}>
-                  <SidebarMenuButton asChild isActive={pathname === path} tooltip={label}>
-                    <NavLink
-                      end={path === paths.overview}
-                      to={path}
-                      onClick={() => setOpenMobile(false)}
-                    >
-                      <Icon aria-hidden="true" />
-                      <span>{label}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {navigationSections.map((section, sectionIndex) => (
+          <Fragment key={section.label}>
+            {sectionIndex > 0 ? (
+              <SidebarSeparator className="mx-3 my-1 w-auto bg-sidebar-foreground/15" />
+            ) : null}
+            <SidebarGroup>
+              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {section.items.map(({ Icon, label, path }) => (
+                    <SidebarMenuItem key={path}>
+                      <SidebarMenuButton asChild isActive={pathname === path} tooltip={label}>
+                        <NavLink
+                          end={path === paths.overview}
+                          to={path}
+                          onClick={() => setOpenMobile(false)}
+                        >
+                          <Icon aria-hidden="true" />
+                          <span>{label}</span>
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </Fragment>
+        ))}
       </SidebarContent>
 
-      <SidebarFooter className="gap-3 p-3">
-        <div className="rounded-lg border border-sidebar-border bg-background/55 p-3 group-data-[collapsible=icon]:hidden">
-          <Badge className="mb-2" variant="outline">
-            {messages.app.localOnly}
-          </Badge>
-          <p className="text-pretty text-sidebar-foreground/65 text-xs leading-relaxed">
-            {messages.app.privacy}
-          </p>
-        </div>
+      <SidebarFooter className="p-3">
         <ThemeSwitcher />
       </SidebarFooter>
       <SidebarRail />
