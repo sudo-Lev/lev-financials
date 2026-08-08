@@ -17,9 +17,9 @@ Non-negotiable constraints:
 
 ## Current checkpoint
 
-Steps 1–8 are complete: the application foundation plus core financial value objects, accounts, statements, merchants, transactions, provenance, and validation states.
+Steps 1–14 are complete: the application foundation, financial domain model, local persistence, import parsing, and conservative transaction normalization/deduplication primitives.
 
-Do not implement roadmap step 9 or later domain behavior until categories and recurring payments have been reviewed with the repository owner. Documentation, fixes to completed work, and review preparation are allowed.
+Do not implement roadmap step 15 or later import behavior until reconciliation rules have been reviewed with the repository owner. Documentation, fixes to completed work, and review preparation are allowed.
 
 ## Architecture boundaries
 
@@ -107,6 +107,12 @@ These constraints define the approved direction. Extend the API deliberately as 
 - A new dependency needs a clear product or maintenance benefit, compatible licensing, and acceptable bundle impact.
 - Pin work to the selected stack in the roadmap unless the owner approves a change.
 - Never introduce a dependency that sends imported data over the network by default.
+- Dexie is the approved local persistence adapter. Keep its schema and record mapping in `infrastructure/storage`; repository interfaces belong in `application/storage`.
+- Store normalized domain records only. Do not persist original PDF or spreadsheet bytes unless the owner explicitly approves a future feature.
+- The local intake accepts `.pdf`, `.xlsx`, and `.csv` statements up to 25 MiB. Keep validation deterministic and keep the raw `File` in transient UI state only until a reviewed use case owns it.
+- PDF text extraction uses the local PDF.js adapter and returns only page-level text fragments with source coordinates. A PDF without a text layer must return `no_text_layer`; OCR remains out of scope.
+- Millennium parsing must consume sanitized extraction data, preserve source-page information, parse Polish amounts including trailing minus, and keep foreign amounts/exchange-rate text separate from settled PLN values.
+- Deduplication is conservative: derive stable fingerprints from dates, currency, signed amount, operation type, and normalized description. Never merge operations based on amount and date alone.
 
 ## Git workflow
 
