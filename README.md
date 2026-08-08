@@ -44,8 +44,8 @@ Lev Financials — local-first застосунок:
 
 ```bash
 corepack enable
-pnpm install
-pnpm dev
+yarn install
+yarn dev
 ```
 
 Vite покаже локальну адресу застосунку в терміналі.
@@ -54,17 +54,17 @@ Vite покаже локальну адресу застосунку в терм
 
 | Команда | Призначення |
 | --- | --- |
-| `pnpm dev` | Запустити development server |
-| `pnpm build` | Перевірити типи та зібрати production bundle |
-| `pnpm test` | Запустити тести один раз |
-| `pnpm test:watch` | Запустити тести у watch-режимі |
-| `pnpm typecheck` | Перевірити TypeScript без генерації файлів |
-| `pnpm lint` | Запустити lint-перевірки Biome |
-| `pnpm format` | Відформатувати підтримувані файли |
-| `pnpm format:check` | Перевірити форматування |
-| `pnpm check` | Запустити всі перевірки, тести та build |
+| `yarn dev` | Запустити development server |
+| `yarn build` | Перевірити типи та зібрати production bundle |
+| `yarn test` | Запустити тести один раз |
+| `yarn test:watch` | Запустити тести у watch-режимі |
+| `yarn typecheck` | Перевірити TypeScript без генерації файлів |
+| `yarn lint` | Запустити lint-перевірки Biome |
+| `yarn format` | Відформатувати підтримувані файли |
+| `yarn format:check` | Перевірити форматування |
+| `yarn verify` | Запустити всі перевірки, тести та build |
 
-Перед коммітом змін у коді потрібно виконати `pnpm check`.
+Перед коммітом змін у коді потрібно виконати `yarn verify`.
 
 ## Структура
 

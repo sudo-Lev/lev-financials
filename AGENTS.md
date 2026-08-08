@@ -97,7 +97,7 @@ These constraints define the approved direction. Extend the API deliberately as 
 - Test observable behavior and domain invariants, not implementation details.
 - Domain and parser tests must be deterministic and use synthetic fixtures.
 - Add regression coverage for every fixed bug when practical.
-- Run the narrowest useful checks while developing, then run `pnpm check` before committing.
+- Run the narrowest useful checks while developing, then run `yarn verify` before committing.
 - Do not claim completion if required checks fail. Report the exact failure and scope.
 - For visual changes, inspect both desktop and mobile output and check the browser console.
 
@@ -114,7 +114,7 @@ These constraints define the approved direction. Extend the API deliberately as 
 - Use Conventional Commit subjects, for example `feat(domain): add money value object`.
 - Keep unrelated user changes intact and out of the commit.
 - Review `git diff` and run `git diff --check` before committing.
-- Run `pnpm check` for code changes and relevant documentation checks for docs-only changes.
+- Run `yarn verify` for code changes and relevant documentation checks for docs-only changes.
 - Never commit `.env`, imported statements, generated private data, or credentials.
 - Push only verified commits to the intended branch and remote.
 
@@ -127,5 +127,5 @@ A change is done when:
 - tests cover the important behavior;
 - privacy and accessibility constraints are preserved;
 - documentation is updated when contracts or workflow changed;
-- `pnpm check` passes;
+- `yarn verify` passes;
 - the commit is focused and understandable without hidden context.
