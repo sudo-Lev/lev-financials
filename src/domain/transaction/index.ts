@@ -6,6 +6,7 @@ export {
 export {
   createTransaction,
   createTransactionId,
+  type CategoryAssignmentSource,
   type Transaction,
   type TransactionDirection,
   type TransactionId,

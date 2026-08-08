@@ -1,4 +1,5 @@
 import type { AccountId } from '@/domain/account'
+import type { CategoryId } from '@/domain/category'
 import { isSameCurrency } from '@/domain/currency'
 import type { MerchantId } from '@/domain/merchant'
 import type { Money } from '@/domain/money'
@@ -13,12 +14,15 @@ import type { ExchangeRate } from './exchange-rate'
 
 export type TransactionId = EntityId<'transaction'>
 export type TransactionDirection = 'credit' | 'debit'
+export type CategoryAssignmentSource = 'manual' | 'rule'
 
 export type Transaction = Readonly<{
   accountId: AccountId
   amount: Money
   balanceAfter?: Money
   bookingDate: LocalDate
+  categoryAssignmentSource?: CategoryAssignmentSource
+  categoryId?: CategoryId
   confidence: ConfidenceLevel
   description: string
   direction: TransactionDirection
@@ -49,6 +53,9 @@ export type TransactionValidationError =
   | Readonly<{
       code: 'exchange_rate_requires_original_amount'
     }>
+  | Readonly<{
+      code: 'category_assignment_requires_category'
+    }>
 
 export function createTransactionId(input: unknown) {
   return createEntityId('transaction', input)
@@ -59,6 +66,8 @@ export function createTransaction(input: {
   amount: Money
   balanceAfter?: Money
   bookingDate: LocalDate
+  categoryAssignmentSource?: CategoryAssignmentSource
+  categoryId?: CategoryId
   confidence: ConfidenceLevel
   description: string
   direction: TransactionDirection
@@ -89,6 +98,10 @@ export function createTransaction(input: {
 
   if (input.originalAmount && input.originalAmount.minorUnits < 0) {
     return failure({ code: 'invalid_transaction_amount', field: 'originalAmount' })
+  }
+
+  if (input.categoryAssignmentSource && !input.categoryId) {
+    return failure({ code: 'category_assignment_requires_category' })
   }
 
   if (input.balanceAfter && !isSameCurrency(input.amount.currency, input.balanceAfter.currency)) {

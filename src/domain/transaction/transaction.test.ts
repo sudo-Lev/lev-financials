@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createAccountId } from '@/domain/account'
+import { createCategoryId } from '@/domain/category'
 import { createCurrency, type Currency } from '@/domain/currency'
 import { createMerchantId } from '@/domain/merchant'
 import { createMoney, type Money } from '@/domain/money'
@@ -140,6 +141,24 @@ describe('Transaction', () => {
       error: { code: 'transaction_currency_mismatch', field: 'balanceAfter' },
       ok: false,
     })
+  })
+
+  it('requires a category when assignment provenance is provided', () => {
+    expect(createTransaction({ ...transactionInput(), categoryAssignmentSource: 'rule' })).toEqual({
+      error: { code: 'category_assignment_requires_category' },
+      ok: false,
+    })
+
+    const categoryId = createCategoryId('category-synthetic-001')
+    if (!categoryId.ok) throw new Error('Expected valid synthetic category fixture')
+
+    expect(
+      createTransaction({
+        ...transactionInput(),
+        categoryAssignmentSource: 'manual',
+        categoryId: categoryId.value,
+      }),
+    ).toEqual(expect.objectContaining({ ok: true }))
   })
 
   it('rejects an exchange rate without an original amount', () => {
