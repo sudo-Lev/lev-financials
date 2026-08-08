@@ -20,3 +20,8 @@ export {
   type ImportTransactionCandidate,
   type NormalizedImportTransaction,
 } from './normalize-transactions'
+export {
+  reconcileStatement,
+  type StatementReconciliation,
+  type StatementReconciliationIssue,
+} from './reconcile-statement'
