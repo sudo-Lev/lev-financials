@@ -1,5 +1,10 @@
-import { getDocument, PasswordException } from 'pdfjs-dist/legacy/build/pdf.mjs'
+import {
+  getDocument,
+  GlobalWorkerOptions,
+  PasswordException,
+} from 'pdfjs-dist/legacy/build/pdf.mjs'
 import type { TextItem } from 'pdfjs-dist/types/src/display/api'
+import pdfWorkerUrl from 'pdfjs-dist/legacy/build/pdf.worker.mjs?url'
 
 import type {
   PdfTextExtraction,
@@ -11,6 +16,9 @@ import type {
 
 export class PdfJsTextExtractor implements PdfTextExtractor {
   async extract(pdfData: ArrayBuffer): Promise<PdfTextExtractionResult> {
+    if (typeof Worker !== 'undefined') {
+      GlobalWorkerOptions.workerSrc = pdfWorkerUrl
+    }
     const loadingTask = getDocument({ data: new Uint8Array(pdfData), disableFontFace: true })
 
     try {

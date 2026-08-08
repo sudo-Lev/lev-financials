@@ -6,6 +6,7 @@ import {
   IconFolderOpen,
   IconLock,
   IconUpload,
+  IconAlertTriangle,
   IconX,
 } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
@@ -15,13 +16,22 @@ import {
   type ImportFileValidationError,
   type ValidatedImportFile,
 } from '@/features/import/model'
+import { createMillenniumPdfStatementParser } from '@/infrastructure/import/millennium'
+import { createPdfJsTextExtractor } from '@/infrastructure/import/pdf'
+import { reconcileStatement, type ParsedMillenniumStatement } from '@/application/import'
 import { messages } from '@/shared/i18n'
-import { Badge, Button, Card, CardContent } from '@/shared/ui'
+import { Badge, Button, Card, CardContent, toast } from '@/shared/ui'
 
 type IntakeState =
   | Readonly<{ status: 'idle' }>
   | Readonly<{ file: ValidatedImportFile; status: 'ready' }>
   | Readonly<{ error: ImportFileValidationError; status: 'error' }>
+
+type ReviewState =
+  | Readonly<{ status: 'idle' }>
+  | Readonly<{ status: 'loading' }>
+  | Readonly<{ statement: ParsedMillenniumStatement; status: 'ready'; warnings: number }>
+  | Readonly<{ message: string; status: 'error' }>
 
 const acceptedFileTypes =
   '.pdf,.xlsx,.csv,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv'
@@ -36,6 +46,7 @@ export function ImportPage() {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [intake, setIntake] = useState<IntakeState>({ status: 'idle' })
+  const [review, setReview] = useState<ReviewState>({ status: 'idle' })
   const copy = messages.pages.import.intake
 
   function selectFile(file: File | undefined) {
@@ -47,11 +58,61 @@ export function ImportPage() {
         ? { file: result.value, status: 'ready' }
         : { error: result.error, status: 'error' },
     )
+    setReview({ status: 'idle' })
   }
 
   function clearFile() {
     setIntake({ status: 'idle' })
+    setReview({ status: 'idle' })
     if (inputRef.current) inputRef.current.value = ''
+  }
+
+  async function reviewStatement() {
+    if (intake.status !== 'ready') return
+    if (intake.file.format !== 'pdf') {
+      setReview({ message: 'Для XLSX та CSV parser буде додано окремим кроком.', status: 'error' })
+      return
+    }
+    setReview({ status: 'loading' })
+    const notificationId = toast.loading('Читаємо текстовий шар PDF…')
+    const extraction = await createPdfJsTextExtractor().extract(
+      await intake.file.file.arrayBuffer(),
+    )
+    if (!extraction.ok) {
+      toast.error('Не вдалося прочитати PDF локально.', { id: notificationId })
+      setReview({ message: 'Не вдалося прочитати PDF локально.', status: 'error' })
+      return
+    }
+    if (extraction.value.status === 'no_text_layer') {
+      toast.warning('У PDF немає текстового шару — OCR не використовується.', {
+        id: notificationId,
+      })
+      setReview({
+        message: 'У PDF немає текстового шару. OCR навмисно не використовується.',
+        status: 'error',
+      })
+      return
+    }
+    toast.loading('Розбираємо операції та звіряємо баланс…', { id: notificationId })
+    const parsed = createMillenniumPdfStatementParser().parse(extraction.value)
+    if (!parsed.ok) {
+      toast.error('Не вдалося розпізнати формат виписки Millennium.', { id: notificationId })
+      setReview({
+        message: 'Формат PDF не схожий на підтримувану виписку Millennium.',
+        status: 'error',
+      })
+      return
+    }
+    const warnings = reconcileStatement(parsed.value).issues.length
+    toast.success(
+      warnings > 0 ? `Перевірено з ${warnings} warning` : 'Виписку перевірено: баланс збігається.',
+      { id: notificationId },
+    )
+    setReview({
+      statement: parsed.value,
+      status: 'ready',
+      warnings,
+    })
   }
 
   const errorMessage =
@@ -133,6 +194,14 @@ export function ImportPage() {
                   <p className="mx-auto mt-4 max-w-sm text-muted-foreground text-sm leading-relaxed">
                     {copy.processingNext}
                   </p>
+                  <Button
+                    className="mt-5"
+                    disabled={review.status === 'loading'}
+                    onClick={reviewStatement}
+                    type="button"
+                  >
+                    {review.status === 'loading' ? 'Перевіряємо локально…' : 'Перевірити виписку'}
+                  </Button>
                   <Button className="mt-5" onClick={clearFile} size="sm" variant="ghost">
                     <IconX aria-hidden="true" />
                     {copy.clear}
@@ -196,6 +265,49 @@ export function ImportPage() {
           </Card>
         </aside>
       </div>
+
+      {review.status === 'ready' && (
+        <Card className="mt-6 border-border/80 bg-card py-0">
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="font-mono text-xs text-muted-foreground uppercase tracking-[0.12em]">
+                  02 / Попередній перегляд
+                </p>
+                <h2 className="mt-2 text-xl font-medium">Виписку розібрано локально</h2>
+              </div>
+              <Badge variant={review.warnings > 0 ? 'outline' : 'secondary'}>
+                {review.warnings > 0 ? `${review.warnings} warnings` : 'Баланс збігається'}
+              </Badge>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div>
+                <p className="text-muted-foreground text-sm">Операцій</p>
+                <p className="mt-1 text-2xl font-medium">{review.statement.transactions.length}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Період</p>
+                <p className="mt-1 font-medium">
+                  {review.statement.period.start} — {review.statement.period.end}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">Валюта</p>
+                <p className="mt-1 text-2xl font-medium">{review.statement.currency}</p>
+              </div>
+            </div>
+            <p className="mt-5 text-muted-foreground text-sm">
+              Підтвердження запису в IndexedDB буде активоване після фінального use case імпорту.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+      {review.status === 'error' && (
+        <p className="mt-5 flex items-center gap-2 text-destructive text-sm" role="alert">
+          <IconAlertTriangle aria-hidden="true" className="size-4" />
+          {review.message}
+        </p>
+      )}
     </section>
   )
 }
